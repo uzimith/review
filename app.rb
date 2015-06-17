@@ -28,7 +28,7 @@ get '/sign_up' do
   erb :sign_up
 end
 
-get '/sign_out' do # for debug
+get '/sign_out' do
   session[:user_id] = nil
   redirect '/'
 end
