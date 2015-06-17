@@ -55,7 +55,16 @@ end
 
 # review
 post '/review/create' do
-  review = Review.new(title: params[:title], caption: params[:caption], body: params[:body])
+  review = Review.new(
+    title: params[:title],
+    caption: params[:caption],
+    body: params[:body],
+    image: Base64.encode64(params[:image][:tempfile].read),
+    image_name: params[:image][:filename],
+    image_content_type: params[:image][:type],
+    user_id: current_user.id
+  )
+
   if review.save
     redirect '/'
   else
@@ -65,7 +74,8 @@ post '/review/create' do
   end
 end
 
-get '/review/:id' do
-  @review = Review.find(params[:id])
-  erb :review
+get '/review/:id/image' do
+  review = Review.find(@params[:id])
+  content_type review.image_content_type
+  Base64.decode64(review.image)
 end
