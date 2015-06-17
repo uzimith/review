@@ -1,1 +1,54 @@
-<p>こんにちは</p>
+<% if current_user %>
+    <% if @error %>
+        <div class="alert alert-danger" role="alert">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          <span class="sr-only">Error:</span>
+          <%= @error %>
+        </div>
+    <% end %>
+    <div class="row">
+        <div class="col-lg-10 col-lg-offset-1">
+            <div class="panel panel-default">
+                <div class="panel-heading"><span class="glyphicon glyphicon-triangle-right"></span>レビュー投稿</div>
+                <div class="panel-body">
+                    <form action="/review/create" method="post">
+                        <div class="form-group">
+                            <label for="title">タイトル</label>
+                            <input id="title" class="form-control" type="text" name="title" />
+                        </div>
+                        <div class="form-group">
+                            <label for="caption">キャプション</label>
+                            <input id="caption" class="form-control" type="text" name="caption" />
+                        </div>
+                        <div class="form-group">
+                            <label for="body">レビュー</label>
+                            <textarea id="body" class="form-control" name="body" cols="30" rows="10"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary pull-right">
+                            投稿 <span class="glyphicon glyphicon-send"></span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<% end %>
+
+<div class="row">
+    <h1 class="page-header">Review</h1>
+</div>
+<div class="row">
+    <div class="col-md-9">
+        <ul class="list-group">
+            <% @reviews.each do |review| %>
+                <a href="/review/<%= review.id %>" class="list-group-item">
+                    <h4 class="list-group-item-heading">
+                        <span class="glyphicon glyphicon-pencil"></span>
+                        <%= review.title %>
+                    </h4>
+                    <p class="list-group-item-text"><%= review.caption %></p>
+                </a>
+            <% end %>
+        </ul>
+    </div>
+</div>

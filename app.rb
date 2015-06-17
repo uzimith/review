@@ -1,13 +1,16 @@
 require 'bundler/setup'
 Bundler.require
 require 'sinatra/reloader' if development?
+require 'sinatra/activerecord'
 require 'sinatra/json'
 
-require './models.rb'
+require './models'
 
 use Rack::Session::Cookie
 
 get '/' do
+  @reviews = Review.all
+  p @reviews
   erb :index
 end
 
@@ -48,4 +51,21 @@ post '/session/create' do
     session[:user_id] = user.id
   end
   redirect "/"
+end
+
+# review
+post '/review/create' do
+  review = Review.new(title: params[:title], caption: params[:caption], body: params[:body])
+  if review.save
+    redirect '/'
+  else
+    @error = "作成できませんでした。"
+    @reviews = Review.all
+    erb :index
+  end
+end
+
+get '/review/:id' do
+  @review = Review.find(params[:id])
+  erb :review
 end

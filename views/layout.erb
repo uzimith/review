@@ -4,7 +4,13 @@
         <meta charset="UTF-8">
         <title>レビュー</title>
         <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
+        <link rel="stylesheet" href="/assets/css/user.css">
     </head>
+    <style>
+    body{
+      font-family: Quicksand, '游ゴシック体', 'Yu Gothic', YuGothic, 'ヒラギノ角ゴシック Pro', 'Hiragino Kaku Gothic Pro', 'メイリオ', Meiryo, Osaka, 'ＭＳ Ｐゴシック', 'MS PGothic', sans-serif;
+    }
+    </style>
     <body>
         <header class="navbar navbar-default">
             <div class="container">
@@ -15,12 +21,11 @@
                     <ul class="nav navbar-nav navbar-right">
                         <% if current_user %>
                             <li>
-                                <p class="navbar-text"><%= current_user.name %></p>
-                            </li>
-                            <li><a href="/sign_out">Sign out</a></li>
+                                <p class="navbar-text"><span class="glyphicon glyphicon-user"></span> <%= current_user.name %></p></li>
+                            <li><a href="/sign_out"><span class="glyphicon glyphicon-log-out"></span> Sign out</a></li>
                         <% else %>
-                            <li><a href="/sign_in">Sign in</a></li>
-                            <li><a href="/sign_up">Sign up</a></li>
+                            <li><a href="/sign_in"><span class="glyphicon glyphicon-log-in"></span> Sign in</a></li>
+                        <li><a href="/sign_up"><span class="glyphicon glyphicon-new-window"></span> Sign up</a></li>
                         <% end %>
                     </ul>
                 </nav>

@@ -1,0 +1,18 @@
+.body {
+  margin: 10px;
+  padding-bottom: 50px;
+  font-size: 120%;
+  z-index: 10;
+  position: relative;
+}
+.body:before{
+font-family: "Glyphicons Halflings";
+content: "\270f";
+font-size: 100px;
+line-height: 1em;
+color: #ddd;
+position: absolute;
+right: 0;
+bottom: 0;
+z-index: -1;
+}
