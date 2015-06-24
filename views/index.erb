@@ -21,6 +21,14 @@
                             <input id="caption" class="form-control" type="text" name="caption" />
                         </div>
                         <div class="form-group">
+                            <label for="caption">カテゴリ</label>
+                            <select id="caption" class="form-control" name="category_id">
+                                <% @categories.each do |category| %>
+                                    <option value="<%= category.id %>"><%= category.name %></option>
+                                <% end %>
+                            </select>
+                        </div>
+                        <div class="form-group">
                             <label for="image">写真</label>
                             <input id="image" type="file" name="image">
                         </div>
@@ -65,8 +73,10 @@
                                 </div>
                             </div>
                             <div class="panel-footer">
+                                <span class="glyphicon glyphicon-tag"></span>
+                                <a href="/category/<%= review.category.id %>" ><%= review.category.name %></a>
                                 <span class="glyphicon glyphicon-user"></span>
-                                <%= review.user.name %>
+                                <a href="/user/<%= review.user.id %>" ><%= review.user.name %></a>
                                 <span class="pull-right"><%= review.updated_at.strftime("%Y/%m/%d") %></span>
                             </div>
                         </div>
@@ -74,5 +84,12 @@
                 </div>
             <% end %>
         </ul>
+    </div>
+    <div class="col-md-3">
+        <div class="list-group">
+            <% @categories.each do |category| %>
+                <a href="/category/<%= category.id %>" class="list-group-item"><%= category.name %></a>
+            <% end %>
+        </div>
     </div>
 </div>

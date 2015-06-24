@@ -10,7 +10,7 @@ use Rack::Session::Cookie
 
 get '/' do
   @reviews = Review.all
-  p @reviews
+  @categories = Category.all
   erb :index
 end
 
@@ -62,7 +62,8 @@ post '/review/create' do
     image: Base64.encode64(params[:image][:tempfile].read),
     image_name: params[:image][:filename],
     image_content_type: params[:image][:type],
-    user_id: current_user.id
+    user_id: current_user.id,
+    category_id: params[:category_id]
   )
 
   if review.save
@@ -78,4 +79,20 @@ get '/review/:id/image' do
   review = Review.find(@params[:id])
   content_type review.image_content_type
   Base64.decode64(review.image)
+end
+
+# category
+get '/category/:id' do
+  @category = Category.find(params[:id])
+  @reviews = Review.where(category: @category).all
+  @categories = Category.all
+  erb :index
+end
+
+# user
+get '/user/:id' do
+  @user = User.find(params[:id])
+  @categories = Category.all
+  @reviews = Review.where(user: @user).all
+  erb :index
 end

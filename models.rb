@@ -10,4 +10,9 @@ end
 class Review < ActiveRecord::Base
   validates :body, presence: true
   belongs_to :user
+  belongs_to :category
+end
+
+class Category < ActiveRecord::Base
+  has_many :reviews
 end

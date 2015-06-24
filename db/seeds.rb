@@ -1,0 +1,5 @@
+Category.create!(name: "映画")
+Category.create!(name: "音楽")
+Category.create!(name: "料理")
+Category.create!(name: "本")
+Category.create!(name: "ファッション")
