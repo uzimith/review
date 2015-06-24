@@ -53,12 +53,17 @@
     <div class="col-md-9">
         <ul class="list-group">
             <% @reviews.each do |review| %>
-                <div class="row">
+                <div class="row" id="review-<%= review.id %>">
                     <div class="col-lg-12">
                         <div class="panel panel-default">
                             <div class="panel-heading">
                                 <span class="glyphicon glyphicon-bookmark"></span>
                                 <%= review.title %>
+                                <% if Favorite.where(review: review, user: current_user).first %>
+                                    <span class="favorite pull-right glyphicon glyphicon-star" data-id="<%= review.id %>"></span>
+                                <% else %>
+                                    <span class="favorite pull-right glyphicon glyphicon-star-empty" data-id="<%= review.id %>"></span>
+                                <% end %>
                             </div>
                             <div class="panel-body body">
                                 <div class="row">
@@ -67,7 +72,7 @@
                                             <img class="img-thumbnail img-responsive" src="/review/<%= review.id %>/image" alt="">
                                         <% end %>
                                     </div>
-                                    <div class="col-md-9">
+                                    <div class="col-md-9 break">
                                         <%= review.body %>
                                     </div>
                                 </div>
@@ -86,10 +91,63 @@
         </ul>
     </div>
     <div class="col-md-3">
+        <div class="row">
+            <div class="col-md-12"><h3>おすすめ</h3></div>
+        </div>
+        <div class="list-group">
+            <% if @recommend %>
+                <a href="/#review-<%= @recommend.id %>" class="list-group-item"><%= @recommend.title %> <span class="badge"><span class="glyphicon glyphicon-star"></span><%= @recommend.favorites.count %></span></a>
+            <% end %>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><h3>ランキング</h3></div>
+        </div>
+        <div class="list-group">
+            <% @ranking.each do |review| %>
+                <a href="/#review-<%= review.id %>" class="list-group-item"><%= review.title %>  <span class="badge"><span class="glyphicon glyphicon-star"></span><%= review.favorites.count %></span></a>
+            <% end %>
+        </div>
+        <div class="row">
+            <div class="col-md-12"><h3>カテゴリ</h3></div>
+        </div>
         <div class="list-group">
             <% @categories.each do |category| %>
-                <a href="/category/<%= category.id %>" class="list-group-item"><%= category.name %></a>
+                <a href="/category/<%= category.id %>" class="list-group-item"><%= category.name %><span class="badge"><span class="glyphicon glyphicon-bookmark"></span> <%= category.reviews.count %></span></a>
             <% end %>
         </div>
     </div>
 </div>
+<script>
+  $(function(){
+    $('.favorite').click(function(){
+      var id = $(this).data('id')
+      var self = $(this)
+      $.ajax({
+        url: '/favorite',
+        type: 'POST',
+        data: {
+          id: id,
+        },
+        dataType: 'json'
+      })
+      .done(function( data, textStatus, jqXHR ) {
+        console.log(data)
+        if(data.favorite){
+          self.addClass('glyphicon-star')
+          self.removeClass('glyphicon-star-empty')
+        }
+        else{
+          self.addClass('glyphicon-star-empty')
+          self.removeClass('glyphicon-star')
+        }
+
+      })
+      .fail(function( jqXHR, textStatus, errorThrown) {
+        alert('エラーが発生しました')
+      })
+      .always(function( jqXHR, textStatus) {
+
+      });
+    });
+  })
+</script>

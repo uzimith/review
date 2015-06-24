@@ -6,7 +6,12 @@ authenticate hash
 save
 3. 投稿しよう
 画像の保存
-has_many/belongs_to
 
 4. ユーザ/カテゴリ
+Category
+User
+has_many/belongs_to
+
 5. ランキング/おすすめ
+中間テーブル(favorite)
+ActiveRecordの難しいやつ

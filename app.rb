@@ -11,6 +11,9 @@ use Rack::Session::Cookie
 get '/' do
   @reviews = Review.all
   @categories = Category.all
+  @recommend = Review.offset(rand(Review.count)).first
+  ids = Favorite.group(:review_id).order('count_id desc').limit(10).count(:id).keys
+  @ranking = Review.find(ids).sort_by {|rank| ids.index(rank.id)}
   erb :index
 end
 
@@ -86,6 +89,9 @@ get '/category/:id' do
   @category = Category.find(params[:id])
   @reviews = Review.where(category: @category).all
   @categories = Category.all
+  @recommend = Review.offset(rand(Review.count)).first
+  ids = Favorite.group(:review_id).order('count_id desc').limit(10).count(:id).keys
+  @ranking = Review.find(ids).sort_by {|rank| ids.index(rank.id)}
   erb :index
 end
 
@@ -94,5 +100,23 @@ get '/user/:id' do
   @user = User.find(params[:id])
   @categories = Category.all
   @reviews = Review.where(user: @user).all
+  @recommend = Review.offset(rand(Review.count)).first
+  ids = Favorite.group(:review_id).order('count_id desc').limit(10).count(:id).keys
+  @ranking = Review.find(ids).sort_by {|rank| ids.index(rank.id)}
   erb :index
+end
+
+post '/favorite' do
+  review = Review.find(params[:id])
+  if review && current_user
+    favorite = Favorite.where(user: current_user, review: review).first
+    if favorite
+      favorite.destroy
+      status = false
+    else
+      Favorite.create(user: current_user, review: review)
+      status = true
+    end
+  end
+  json favorite: status
 end
