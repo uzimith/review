@@ -64,12 +64,16 @@ get '/review/:id' do
 end
 
 post '/review/create' do
+  auth = {
+    cloud_name: "",
+    api_key:    "",
+    api_secret: ""
+  }
+  uploaded = Cloudinary::Uploader.upload(params[:image][:tempfile].path, auth)
   review = Review.new(
     title: params[:title],
     body: params[:body],
-    image: Base64.encode64(params[:image][:tempfile].read),
-    image_name: params[:image][:filename],
-    image_content_type: params[:image][:type],
+    image_url: uploaded['url'],
     user_id: current_user.id,
     category_id: params[:category_id]
   )
@@ -81,12 +85,6 @@ post '/review/create' do
     @reviews = Review.all
     erb :index
   end
-end
-
-get '/review/:id/image' do
-  review = Review.find(@params[:id])
-  content_type review.image_content_type
-  Base64.decode64(review.image)
 end
 
 # category
@@ -102,6 +100,7 @@ end
 
 # user
 get '/user/:id' do
+
   @user = User.find(params[:id])
   @categories = Category.all
   @reviews = Review.where(user: @user).all
