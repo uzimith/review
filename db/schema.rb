@@ -19,23 +19,14 @@ ActiveRecord::Schema.define(version: 20150624034634) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "favorites", force: :cascade do |t|
+  create_table "comments", force: :cascade do |t|
     t.integer "user_id"
     t.integer "review_id"
+    t.text    "text"
   end
 
-  create_table "reviews", force: :cascade do |t|
-    t.string   "title"
-    t.string   "caption"
-    t.text     "body"
-    t.datetime "created_at",         null: false
-    t.datetime "updated_at",         null: false
-    t.binary   "image"
-    t.string   "image_name"
-    t.string   "image_content_type"
-    t.integer  "user_id"
-    t.integer  "category_id"
-  end
+# Could not dump table "reviews" because of following NoMethodError
+#   undefined method `[]' for nil:NilClass
 
   create_table "users", force: :cascade do |t|
     t.string   "name"

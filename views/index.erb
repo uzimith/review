@@ -17,12 +17,8 @@
                             <input id="title" class="form-control" type="text" name="title" />
                         </div>
                         <div class="form-group">
-                            <label for="caption">キャプション</label>
-                            <input id="caption" class="form-control" type="text" name="caption" />
-                        </div>
-                        <div class="form-group">
-                            <label for="caption">カテゴリ</label>
-                            <select id="caption" class="form-control" name="category_id">
+                            <label for="category">カテゴリ</label>
+                            <select id="category" class="form-control" name="category_id">
                                 <% @categories.each do |category| %>
                                     <option value="<%= category.id %>"><%= category.name %></option>
                                 <% end %>
@@ -53,36 +49,36 @@
     <div class="col-md-9">
         <ul class="list-group">
             <% @reviews.each do |review| %>
-                <div class="row" id="review-<%= review.id %>">
-                    <div class="col-lg-12">
-                        <div class="panel panel-default">
-                            <div class="panel-heading">
-                                <span class="glyphicon glyphicon-bookmark"></span>
-                                <%= review.title %>
-                                <% if Favorite.where(review: review, user: current_user).first %>
-                                    <span class="favorite pull-right glyphicon glyphicon-star" data-id="<%= review.id %>"></span>
-                                <% else %>
-                                    <span class="favorite pull-right glyphicon glyphicon-star-empty" data-id="<%= review.id %>"></span>
-                                <% end %>
-                            </div>
-                            <div class="panel-body body">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <% if review.image %>
-                                            <img class="img-thumbnail img-responsive" src="/review/<%= review.id %>/image" alt="">
-                                        <% end %>
-                                    </div>
-                                    <div class="col-md-9 break">
-                                        <%= review.body %>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="panel-footer">
-                                <span class="glyphicon glyphicon-tag"></span>
-                                <a href="/category/<%= review.category.id %>" ><%= review.category.name %></a>
-                                <span class="glyphicon glyphicon-user"></span>
-                                <a href="/user/<%= review.user.id %>" ><%= review.user.name %></a>
-                                <span class="pull-right"><%= review.updated_at.strftime("%Y/%m/%d") %></span>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h3>
+                            <span class="glyphicon glyphicon-bookmark"></span>
+                            <%= review.title %>
+                        </h3>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <span class="glyphicon glyphicon-tag"></span>
+                        <a href="/category/<%= review.category.id %>" ><%= review.category.name %></a>
+                        <span class="glyphicon glyphicon-user"></span>
+                        <a href="/user/<%= review.user.id %>" ><%= review.user.name %></a>
+                        <span class="pull-right"><%= review.updated_at.strftime("%Y/%m/%d") %></span>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <% if review.image %>
+                            <img class="img-thumbnail img-responsive" src="/review/<%= review.id %>/image" alt="">
+                        <% end %>
+                    </div>
+                    <div class="col-md-9 break">
+                        <div class="row">
+                            <div class="col-md-12"><%= review.body %></div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a class="pull-right" href="/review/<%= review.id %>"><span class="glyphicon glyphicon-plus-sign"></span></a>
                             </div>
                         </div>
                     </div>
@@ -96,7 +92,7 @@
         </div>
         <div class="list-group">
             <% if @recommend %>
-                <a href="/#review-<%= @recommend.id %>" class="list-group-item"><%= @recommend.title %> <span class="badge"><span class="glyphicon glyphicon-star"></span><%= @recommend.favorites.count %></span></a>
+                <a href="/review/<%= @recommend.id %>" class="list-group-item"><%= @recommend.title %> <span class="badge"><span class="glyphicon glyphicon-star"></span><%= @recommend.comments.count %></span></a>
             <% end %>
         </div>
         <div class="row">
@@ -104,7 +100,7 @@
         </div>
         <div class="list-group">
             <% @ranking.each do |review| %>
-                <a href="/#review-<%= review.id %>" class="list-group-item"><%= review.title %>  <span class="badge"><span class="glyphicon glyphicon-star"></span><%= review.favorites.count %></span></a>
+                <a href="/review/<%= review.id %>" class="list-group-item"><%= review.title %>  <span class="badge"><span class="glyphicon glyphicon-star"></span><%= review.comments.count %></span></a>
             <% end %>
         </div>
         <div class="row">
@@ -117,37 +113,3 @@
         </div>
     </div>
 </div>
-<script>
-  $(function(){
-    $('.favorite').click(function(){
-      var id = $(this).data('id')
-      var self = $(this)
-      $.ajax({
-        url: '/favorite',
-        type: 'POST',
-        data: {
-          id: id,
-        },
-        dataType: 'json'
-      })
-      .done(function( data, textStatus, jqXHR ) {
-        console.log(data)
-        if(data.favorite){
-          self.addClass('glyphicon-star')
-          self.removeClass('glyphicon-star-empty')
-        }
-        else{
-          self.addClass('glyphicon-star-empty')
-          self.removeClass('glyphicon-star')
-        }
-
-      })
-      .fail(function( jqXHR, textStatus, errorThrown) {
-        alert('エラーが発生しました')
-      })
-      .always(function( jqXHR, textStatus) {
-
-      });
-    });
-  })
-</script>

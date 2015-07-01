@@ -1,0 +1,54 @@
+<div class="row">
+    <h1 class="page-header">
+        <span class="glyphicon glyphicon-bookmark"></span>
+        <%= @review.title %>
+    </h1>
+</div>
+
+<span class="glyphicon glyphicon-tag"></span>
+<a href="/category/<%= @review.category.id %>" ><%= @review.category.name %></a>
+<span class="glyphicon glyphicon-user"></span>
+<a href="/user/<%= @review.user.id %>" ><%= @review.user.name %></a>
+<span class="pull-right"><%= @review.updated_at.strftime("%Y/%m/%d") %></span>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-3">
+        <% if @review.image %>
+            <img class="img-thumbnail img-responsive" src="/review/<%= @review.id %>/image" alt="">
+        <% end %>
+    </div>
+    <div class="col-md-9 break">
+        <%= @review.body %>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12"><h3>コメント</h3></div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <ul class="list-group">
+            <% @review.comments.each do |comment| %>
+                <li class="list-group-item">
+                    <span class="glyphicon glyphicon-user"></span> <a href="/user/<%= comment.user.id %>"><%= comment.user.name %></a> : <%= comment.text %>
+                </li>
+            <% end %>
+        </ul>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <form action="/review/<%= @review.id %>/comment" method="post">
+            <div class="form-group">
+                <textarea id="body" class="form-control" name="text"  rows="3"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary pull-right">
+                <span class="glyphicon glyphicon-send"></span>
+            </button>
+        </form>
+    </div>
+</div>
+

@@ -12,7 +12,7 @@ get '/' do
   @reviews = Review.all
   @categories = Category.all
   @recommend = Review.offset(rand(Review.count)).first
-  ids = Favorite.group(:review_id).order('count_id desc').limit(10).count(:id).keys
+  ids = Comment.group(:review_id).order('count_id desc').limit(10).count(:id).keys
   @ranking = Review.find(ids).sort_by {|rank| ids.index(rank.id)}
   erb :index
 end
@@ -57,10 +57,15 @@ post '/session/create' do
 end
 
 # review
+
+get '/review/:id' do
+  @review = Review.find(params[:id])
+  erb :review
+end
+
 post '/review/create' do
   review = Review.new(
     title: params[:title],
-    caption: params[:caption],
     body: params[:body],
     image: Base64.encode64(params[:image][:tempfile].read),
     image_name: params[:image][:filename],
@@ -90,7 +95,7 @@ get '/category/:id' do
   @reviews = Review.where(category: @category).all
   @categories = Category.all
   @recommend = Review.offset(rand(Review.count)).first
-  ids = Favorite.group(:review_id).order('count_id desc').limit(10).count(:id).keys
+  ids = Comment.group(:review_id).order('count_id desc').limit(10).count(:id).keys
   @ranking = Review.find(ids).sort_by {|rank| ids.index(rank.id)}
   erb :index
 end
@@ -101,22 +106,17 @@ get '/user/:id' do
   @categories = Category.all
   @reviews = Review.where(user: @user).all
   @recommend = Review.offset(rand(Review.count)).first
-  ids = Favorite.group(:review_id).order('count_id desc').limit(10).count(:id).keys
+  ids = Comment.group(:review_id).order('count_id desc').limit(10).count(:id).keys
   @ranking = Review.find(ids).sort_by {|rank| ids.index(rank.id)}
   erb :index
 end
 
-post '/favorite' do
+# comment
+
+post '/review/:id/comment' do
   review = Review.find(params[:id])
   if review && current_user
-    favorite = Favorite.where(user: current_user, review: review).first
-    if favorite
-      favorite.destroy
-      status = false
-    else
-      Favorite.create(user: current_user, review: review)
-      status = true
-    end
+    Comment.create(review: review, user: current_user, text: params[:text])
   end
-  json favorite: status
+  redirect "/review/#{params[:id]}"
 end
